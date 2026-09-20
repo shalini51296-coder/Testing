@@ -24,18 +24,24 @@ jobs:
         distribution: 'temurin'
         java-version: '17'
 
-    - name: Bundle Web Assets & Setup Capacitor
+    - name: Locate files & Prepare project
       run: |
-        mkdir -p www
-        for item in *; do
-          if [ "$item" != "www" ]; then
-            cp -r "$item" www/
+        if [ ! -f "package.json" ]; then
+          SUBDIR=$(find . -mindepth 2 -maxdepth 2 -name "package.json" | head -n 1 | xargs dirname)
+          if [ -n "$SUBDIR" ]; then
+            echo "Found project in subfolder: $SUBDIR"
+            cp -r $SUBDIR/* .
           fi
-        done
-        npm init -y
-        npm install @capacitor/core @capacitor/cli @capacitor/android
-        npx cap init "Supportet App" "com.supportet.app" --web-dir "www"
-        npx cap add android
+        fi
+
+    - name: Install dependencies & Build Web
+      run: |
+        npm install
+        node build-web.js || npm run build || true
+
+    - name: Setup & Sync Capacitor Android
+      run: |
+        npx cap add android || true
         npx cap sync android
 
     - name: Build Debug APK
