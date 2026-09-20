@@ -1,0 +1,8 @@
+{
+  "appId": "com.ctet.supertet2026",
+  "appName": "Super TET 2026",
+  "webDir": "www",
+  "server": {
+    "androidScheme": "https"
+  }
+}

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>UP Super TET 2026 - 50+ Mock Test Engine</title>
+    <link rel="stylesheet" href="tailwind.css">
+    <link rel="stylesheet" href="fa/css/all.min.css">
+    <style>
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 4px; }
+        .btn-not-visited { background-color: #e2e8f0; color: #334155; }
+        .btn-not-answered { background-color: #ef4444; color: white; }
+        .btn-answered { background-color: #22c55e; color: white; }
+        .btn-marked { background-color: #a855f7; color: white; border-radius: 50%; }
+        .btn-marked-answered { background-color: #a855f7; color: white; position: relative; }
+        .btn-marked-answered::after {
+            content: ''; position: absolute; bottom: 2px; right: 2px; width: 6px; height: 6px;
+            background-color: #22c55e; border-radius: 50%; border: 1px solid white;
+        }
+        .heat-strong { background-color: #10b981; color: white; }
+        .heat-moderate { background-color: #f59e0b; color: white; }
+        .heat-weak { background-color: #f43f5e; color: white; }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen flex flex-col select-none">
+
+    <!-- 1. AUTHENTICATION SCREEN -->
+    <div id="auth-screen" class="min-h-screen flex items-center justify-center p-4">
+        <div class="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full border border-slate-200">
+            <div class="text-center mb-6">
+                <span class="bg-amber-500 text-indigo-950 px-2.5 py-1 rounded font-black text-xs tracking-wider">SUPER TET 2026</span>
+                <h2 class="text-xl font-black text-slate-900 mt-3" id="auth-title">Account Login</h2>
+                <p class="text-xs text-slate-500 mt-1">Local Memory Portal - No Internet Needed</p>
+            </div>
+
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                <div id="name-field-group" class="hidden">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name</label>
+                    <input type="text" id="auth-name" class="w-full p-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-600 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Username / Mobile</label>
+                    <input type="text" id="auth-username" required class="w-full p-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-600 outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+                    <input type="password" id="auth-password" required class="w-full p-2.5 rounded-lg border border-slate-300 text-xs focus:ring-2 focus:ring-indigo-600 outline-none">
+                </div>
+
+                <div id="auth-msg" class="text-xs font-bold text-center hidden"></div>
+
+                <button type="submit" id="auth-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-lg text-xs shadow">
+                    Login
+                </button>
+            </form>
+
+            <div class="text-center mt-4 pt-4 border-t border-slate-100">
+                <button onclick="toggleAuthMode()" id="auth-toggle-btn" class="text-xs font-bold text-indigo-600 hover:underline">
+                    New User? Create Account
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. MAIN APP DASHBOARD -->
+    <div id="main-app" class="hidden flex-1 flex flex-col">
+        
+        <!-- Header -->
+        <header class="bg-indigo-950 text-white py-2 px-4 flex justify-between items-center sticky top-0 z-50 shadow">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-graduation-cap text-amber-400 text-sm"></i>
+                <span id="user-display" class="font-bold text-xs truncate max-w-[120px]">User</span>
+            </div>
+            <div class="flex items-center space-x-2">
+                <select id="header-lang-select" onchange="changeLanguage(this.value)" class="bg-indigo-900 text-amber-300 font-bold rounded px-2 py-1 text-[11px] outline-none">
+                    <option value="hi">हिंदी (HI)</option>
+                    <option value="en">English (EN)</option>
+                </select>
+                <div id="timer-box" class="hidden bg-rose-600 px-2.5 py-1 rounded text-white font-mono font-bold text-xs">
+                    <i class="fa-regular fa-clock mr-1"></i><span id="time-display">120:00</span>
+                </div>
+                <button onclick="logout()" class="bg-slate-800 text-slate-300 px-2 py-1 rounded text-[10px] font-bold">Logout</button>
+            </div>
+        </header>
+
+        <main class="flex-1 max-w-[1400px] w-full mx-auto p-3 flex flex-col">
+
+            <!-- Test Set Selection Dashboard -->
+            <div id="dashboard-screen" class="space-y-4">
+                <div class="bg-white p-4 rounded-xl shadow border border-slate-200">
+                    <h2 class="text-lg font-black text-slate-900 mb-1">Super TET 2026 Test Series (50+ Sets)</h2>
+                    <p class="text-xs text-slate-500">120 Questions • 120 Minutes • 360 Marks (+3 Correct, -1 Incorrect)</p>
+                </div>
+
+                <!-- Weakness Analysis Summary Box -->
+                <div class="bg-amber-50 border border-amber-200 p-4 rounded-xl flex flex-col md:flex-row justify-between items-center gap-3">
+                    <div>
+                        <h3 class="text-xs font-bold text-amber-900 flex items-center">
+                            <i class="fa-solid fa-triangle-exclamation mr-1.5 text-amber-600"></i> Adaptive Retake Ready
+                        </h3>
+                        <p id="weakness-summary-text" class="text-[11px] text-amber-800 mt-0.5">Complete a test to unlock weak topic targeting.</p>
+                    </div>
+                    <button id="adaptive-launch-btn" onclick="startAdaptiveTest()" disabled class="w-full md:w-auto bg-amber-600 disabled:opacity-50 text-white font-bold px-4 py-2 rounded-lg text-xs shadow flex items-center justify-center">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Launch Weak Topic Adaptive Test
+                    </button>
+                </div>
+
+                <!-- 50 Test Sets Grid -->
+                <div>
+                    <h3 class="text-xs font-bold text-slate-700 mb-2.5 uppercase tracking-wider">Select Mock Test Set</h3>
+                    <div id="test-sets-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2.5"></div>
+                </div>
+            </div>
+
+            <!-- Exam Screen -->
+            <div id="exam-screen" class="hidden flex-1 grid grid-cols-1 lg:grid-cols-4 gap-3">
+                <div class="lg:col-span-3 bg-white rounded-lg shadow border border-slate-200 flex flex-col justify-between min-h-[420px]">
+                    <div class="bg-slate-100 border-b px-3 py-2 flex justify-between items-center text-xs">
+                        <div class="flex space-x-1.5">
+                            <span id="q-subject-badge" class="bg-indigo-900 text-white font-bold px-2 py-0.5 rounded text-[10px]">SUBJECT</span>
+                            <span id="q-topic-badge" class="bg-amber-100 text-amber-900 font-semibold px-2 py-0.5 rounded border border-amber-300 text-[10px]">TOPIC</span>
+                        </div>
+                        <span id="q-number-title" class="font-bold text-slate-800 text-[11px]">Q. 1 / 120</span>
+                    </div>
+
+                    <div class="p-4 flex-1 overflow-y-auto">
+                        <h3 id="q-text" class="text-sm font-semibold text-slate-900 mb-4 leading-relaxed"></h3>
+                        <div id="options-container" class="space-y-2"></div>
+                    </div>
+
+                    <div class="bg-slate-50 border-t p-2.5 flex justify-between text-xs">
+                        <div class="flex space-x-1.5">
+                            <button onclick="markForReviewAndNext()" class="bg-purple-600 text-white font-semibold px-2.5 py-1.5 rounded text-[11px]">Mark Review</button>
+                            <button onclick="clearResponse()" class="bg-slate-200 text-slate-700 font-semibold px-2.5 py-1.5 rounded text-[11px]">Clear</button>
+                        </div>
+                        <div class="flex space-x-1.5">
+                            <button id="prev-btn" onclick="navigateQuestion(-1)" class="bg-slate-600 text-white font-semibold px-3 py-1.5 rounded text-[11px]">Back</button>
+                            <button id="next-btn" onclick="saveAndNext()" class="bg-emerald-600 text-white font-bold px-4 py-1.5 rounded text-[11px]">Save & Next</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-lg shadow border border-slate-200 p-3 flex flex-col justify-between">
+                    <div>
+                        <div class="font-bold text-[11px] text-slate-700 mb-2 border-b pb-1">QUESTION PALETTE</div>
+                        <div id="palette-grid" class="grid grid-cols-6 gap-1 max-h-[260px] overflow-y-auto custom-scrollbar"></div>
+                    </div>
+                    <button onclick="confirmSubmitExam()" class="mt-3 w-full bg-rose-600 text-white font-bold py-2 rounded text-xs shadow">
+                        SUBMIT TEST
+                    </button>
+                </div>
+            </div>
+
+            <!-- Scorecard & Topic Heatmap Screen -->
+            <div id="result-screen" class="hidden bg-white rounded-xl shadow p-5 border border-slate-200 max-w-4xl mx-auto w-full space-y-5">
+                <div class="text-center border-b pb-3">
+                    <h2 class="text-xl font-black text-slate-900">Exam Results & Topic Heatmap</h2>
+                    <p class="text-xs text-slate-500" id="result-set-title">Mock Test Result</p>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 text-center">
+                    <div class="bg-indigo-50 p-2.5 rounded-lg border border-indigo-100">
+                        <div class="text-[9px] font-bold text-indigo-600">SCORE</div>
+                        <div id="res-score" class="text-base font-black text-indigo-950">0 / 360</div>
+                    </div>
+                    <div class="bg-emerald-50 p-2.5 rounded-lg border border-emerald-100">
+                        <div class="text-[9px] font-bold text-emerald-600">CORRECT (+3)</div>
+                        <div id="res-correct" class="text-base font-black text-emerald-700">0</div>
+                    </div>
+                    <div class="bg-rose-50 p-2.5 rounded-lg border border-rose-100">
+                        <div class="text-[9px] font-bold text-rose-600">INCORRECT (-1)</div>
+                        <div id="res-incorrect" class="text-base font-black text-rose-700">0</div>
+                    </div>
+                    <div class="bg-amber-50 p-2.5 rounded-lg border border-amber-100">
+                        <div class="text-[9px] font-bold text-amber-600">ACCURACY</div>
+                        <div id="res-accuracy" class="text-base font-black text-amber-700">0%</div>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="font-bold text-xs text-slate-800 mb-2 flex items-center">
+                        <i class="fa-solid fa-fire text-rose-500 mr-1.5"></i> Micro-Topic Heatmap Analysis
+                    </h3>
+                    <div id="heatmap-container" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2"></div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row justify-center gap-2 border-t pt-4">
+                    <button onclick="startAdaptiveTest()" id="result-adaptive-btn" class="bg-amber-600 hover:bg-amber-700 text-white font-bold py-2 px-4 rounded-lg text-xs shadow flex items-center justify-center">
+                        <i class="fa-solid fa-bolt mr-1.5"></i> Practice Weak Topics Now
+                    </button>
+                    <button onclick="showDashboard()" class="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-4 rounded-lg text-xs shadow">
+                        Back to Test Series Dashboard
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <script>
+        // MASTER QUESTION SEEDS
+        const masterSeedPool = [
+            { subject: "सामान्य ज्ञान / समसामयिक", topic: "1857 Revolt", question_hi: "1857 के संग्राम में झांसी में विद्रोह का दमन किसने किया?", question_en: "Who suppressed the 1857 revolt in Jhansi?", options_hi: ["जनरल ह्यूरोज", "कर्नल नील", "विंसेंट आयर", "कॉलिन कैंपबेल"], options_en: ["General Hugh Rose", "Colonel Neill", "Vincent Eyre", "Colin Campbell"], answer: 0 },
+            { subject: "सामान्य ज्ञान / समसामयिक", topic: "UP HQ", question_hi: "'संत कबीर नगर' का जिला मुख्यालय कहाँ स्थित है?", question_en: "Where is the HQ of Sant Kabir Nagar district?", options_hi: ["खलीलाबाद", "पडरौना", "अकबरपुर", "नौगढ़"], options_en: ["Khalilabad", "Padrauna", "Akbarpur", "Naugarh"], answer: 0 },
+            { subject: "भाषा (हिंदी/संस्कृत/Eng)", topic: "Grammar Sandhi", question_hi: "'प्रत्युत्पन्नमति' में कौन सी संधि है?", question_en: "Which Sandhi is present in 'Pratyutpannamati'?", options_hi: ["यण संधि", "गुण संधि", "दीर्घ संधि", "वृद्धि संधि"], options_en: ["Yan Sandhi", "Gun Sandhi", "Dirgha Sandhi", "Vriddhi Sandhi"], answer: 0 },
+            { subject: "गणित (Maths)", topic: "Mensuration", question_hi: "वृत्त की त्रिज्या 50% बढ़ाने पर क्षेत्रफल कितना बढ़ेगा?", question_en: "If radius increases by 50%, what is the area increase?", options_hi: ["125%", "100%", "150%", "225%"], options_en: ["125%", "100%", "150%", "225%"], answer: 0 },
+            { subject: "विज्ञान (Science)", topic: "Endocrine System", question_hi: "इंसुलिन का स्राव अग्न्याशय की किन कोशिकाओं से होता है?", question_en: "Insulin is secreted by which pancreatic cells?", options_hi: ["बीटा कोशिकाएं", "अल्फा कोशिकाएं", "डेल्टा कोशिकाएं", "एफ कोशिकाएं"], options_en: ["Beta Cells", "Alpha Cells", "Delta Cells", "F Cells"], answer: 0 },
+            { subject: "बाल मनोविज्ञान", topic: "Piaget Theory", question_hi: "संरक्षण (Conservation) की क्षमता पियाजे की किस अवस्था में आती है?", question_en: "At which Piaget stage does Conservation develop?", options_hi: ["मूर्त-संक्रियात्मक", "पूर्व-संक्रियात्मक", "अमूर्त-संक्रियात्मक", "संवेदी-गामक"], options_en: ["Concrete Operational", "Pre-operational", "Formal Operational", "Sensorimotor"], answer: 0 },
+            { subject: "शिक्षण कौशल", topic: "Teaching Methods", question_hi: "सूक्ष्म शिक्षण (Micro Teaching) के भारतीय प्रतिमान में कुल कितना समय लगता है?", question_en: "How much total time is allotted in Indian Micro Teaching pattern?", options_hi: ["36 मिनट", "45 मिनट", "30 मिनट", "40 मिनट"], options_en: ["36 Minutes", "45 Minutes", "30 Minutes", "40 Minutes"], answer: 0 },
+            { subject: "पर्यावरण व सामाजिक", topic: "Ecology", question_hi: "10% का नियम (10% Law) किस वैज्ञानिक ने दिया था?", question_en: "Which scientist proposed the 10% Law of energy transfer?", options_hi: ["लिंडमान", "टान्सले", "ओडम", "हेकेल"], options_en: ["Lindeman", "Tansley", "Odum", "Haeckel"], answer: 0 },
+            { subject: "रीजनिंग (Reasoning)", topic: "Coding Decoding", question_hi: "यदि C = 3, CAT = 24, तो FAITH = ?", question_en: "If C = 3, CAT = 24, then FAITH = ?", options_hi: ["44", "42", "45", "41"], options_en: ["44", "42", "45", "41"], answer: 0 },
+            { subject: "सूचना तकनीकी (IT)", topic: "Computers", question_hi: "कंप्यूटर की स्थायी स्मृति (Permanent Memory) को क्या कहते हैं?", question_en: "What is the permanent memory of a computer called?", options_hi: ["ROM", "RAM", "CPU", "CD-ROM"], options_en: ["ROM", "RAM", "CPU", "CD-ROM"], answer: 0 }
+        ];
+
+        let currentUser = null;
+        let isSignup = false;
+        let examQuestions = [], userAnswers = {}, reviewStatus = {}, visitedStatus = {};
+        let currentLang = 'hi', currentQuestionIndex = 0, timerSeconds = 120 * 60, timerInterval = null;
+        let currentSetId = 1;
+
+        function seededRandom(seed) {
+            let x = Math.sin(seed++) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function generateTestSet(setId) {
+            let questions = [];
+            let seed = setId * 100;
+            for (let i = 0; i < 120; i++) {
+                let base = masterSeedPool[i % masterSeedPool.length];
+                let variationNum = Math.floor(seededRandom(seed + i) * 899) + 100;
+                questions.push({
+                    id: `S${setId}_Q${i+1}`,
+                    subject: base.subject,
+                    topic: base.topic,
+                    question_hi: `[Set ${setId} - Var ${variationNum}] ${base.question_hi}`,
+                    question_en: `[Set ${setId} - Var ${variationNum}] ${base.question_en}`,
+                    options_hi: [...base.options_hi],
+                    options_en: [...base.options_en],
+                    answer: base.answer
+                });
+            }
+            return questions;
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            let username = document.getElementById('auth-username').value.trim();
+            let password = document.getElementById('auth-password').value.trim();
+            let name = document.getElementById('auth-name').value.trim();
+
+            let users = JSON.parse(localStorage.getItem('st_users') || '{}');
+
+            if (isSignup) {
+                if (users[username]) {
+                    showAuthMsg("User already exists! Try logging in.", "text-rose-600");
+                    return;
+                }
+                users[username] = { name: name || username, password: password, weakTopics: [] };
+                localStorage.setItem('st_users', JSON.stringify(users));
+                showAuthMsg("Account created! Logging in...", "text-emerald-600");
+            } else {
+                if (!users[username] || users[username].password !== password) {
+                    showAuthMsg("Invalid credentials!", "text-rose-600");
+                    return;
+                }
+            }
+
+            currentUser = { username: username, name: users[username].name || username };
+            localStorage.setItem('st_session', JSON.stringify(currentUser));
+            initApp();
+        }
+
+        function showAuthMsg(text, color) {
+            let msg = document.getElementById('auth-msg');
+            msg.innerText = text;
+            msg.className = `text-xs font-bold text-center ${color}`;
+            msg.classList.remove('hidden');
+        }
+
+        function toggleAuthMode() {
+            isSignup = !isSignup;
+            document.getElementById('auth-title').innerText = isSignup ? "Create Account" : "Account Login";
+            document.getElementById('auth-btn').innerText = isSignup ? "Register & Login" : "Login";
+            document.getElementById('auth-toggle-btn').innerText = isSignup ? "Existing User? Login" : "New User? Create Account";
+            document.getElementById('name-field-group').classList.toggle('hidden', !isSignup);
+            document.getElementById('auth-msg').classList.add('hidden');
+        }
+
+        function checkAuth() {
+            let session = localStorage.getItem('st_session');
+            if (session) {
+                currentUser = JSON.parse(session);
+                initApp();
+            } else {
+                document.getElementById('auth-screen').classList.remove('hidden');
+                document.getElementById('main-app').classList.add('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('st_session');
+            location.reload();
+        }
+
+        function initApp() {
+            document.getElementById('auth-screen').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            document.getElementById('user-display').innerText = currentUser.name;
+            renderTestSetGrid();
+            updateWeaknessSummary();
+            showDashboard();
+        }
+
+        function renderTestSetGrid() {
+            let grid = document.getElementById('test-sets-grid');
+            grid.innerHTML = '';
+            for (let i = 1; i <= 50; i++) {
+                let btn = document.createElement('button');
+                btn.className = "bg-white border border-slate-200 hover:border-indigo-600 p-3 rounded-lg shadow-sm text-left flex flex-col justify-between hover:bg-indigo-50 transition";
+                btn.onclick = () => startFullTest(i);
+                btn.innerHTML = `
+                    <div class="flex justify-between items-center w-full">
+                        <span class="font-black text-xs text-indigo-900">Set ${i}</span>
+                        <i class="fa-solid fa-circle-play text-indigo-600 text-xs"></i>
+                    </div>
+                    <span class="text-[9px] font-bold text-slate-400 mt-2">120 Qs • 360 Marks</span>
+                `;
+                grid.appendChild(btn);
+            }
+        }
+
+        function updateWeaknessSummary() {
+            let users = JSON.parse(localStorage.getItem('st_users') || '{}');
+            let userData = users[currentUser.username] || {};
+            let weakTopics = userData.weakTopics || [];
+
+            let summaryText = document.getElementById('weakness-summary-text');
+            let launchBtn = document.getElementById('adaptive-launch-btn');
+
+            if (weakTopics.length > 0) {
+                summaryText.innerText = `Identified ${weakTopics.length} weak micro-topics across previous tests.`;
+                launchBtn.disabled = false;
+            } else {
+                summaryText.innerText = "No weak areas detected yet. Complete a test to build analytics.";
+                launchBtn.disabled = true;
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('dashboard-screen').classList.remove('hidden');
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('timer-box').classList.add('hidden');
+            clearInterval(timerInterval);
+        }
+
+        function startFullTest(setId) {
+            currentSetId = setId;
+            examQuestions = generateTestSet(setId);
+            initExamWorkspace();
+        }
+
+        function startAdaptiveTest() {
+            let users = JSON.parse(localStorage.getItem('st_users') || '{}');
+            let userData = users[currentUser.username] || {};
+            let weakTopics = userData.weakTopics || [];
+
+            if (weakTopics.length === 0) return;
+
+            examQuestions = [];
+            let fullSet = generateTestSet(1);
+            let pool = fullSet.filter(q => weakTopics.includes(q.topic));
+            
+            for (let i = 0; i < 30; i++) {
+                let base = pool[i % pool.length];
+                examQuestions.push({ ...base, id: `ADAPTIVE_${i+1}` });
+            }
+
+            currentSetId = "Adaptive Retake";
+            initExamWorkspace();
+        }
+
+        function initExamWorkspace() {
+            userAnswers = {}; reviewStatus = {}; visitedStatus = {};
+            currentQuestionIndex = 0;
+            timerSeconds = 120 * 60;
+
+            document.getElementById('dashboard-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            document.getElementById('exam-screen').classList.remove('hidden');
+            document.getElementById('timer-box').classList.remove('hidden');
+
+            renderPalette();
+            loadQuestion(0);
+            startTimer();
+        }
+
+        function startTimer() {
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                if (timerSeconds <= 0) { clearInterval(timerInterval); submitExam(); return; }
+                timerSeconds--;
+                let m = Math.floor(timerSeconds / 60), s = timerSeconds % 60;
+                document.getElementById('time-display').innerText = `${m}:${s < 10 ? '0' : ''}${s}`;
+            }, 1000);
+        }
+
+        function changeLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('header-lang-select').value = lang;
+            loadQuestion(currentQuestionIndex);
+        }
+
+        function loadQuestion(index) {
+            currentQuestionIndex = index;
+            visitedStatus[index] = true;
+            let q = examQuestions[index];
+
+            document.getElementById('q-subject-badge').innerText = q.subject;
+            document.getElementById('q-topic-badge').innerText = q.topic;
+            document.getElementById('q-number-title').innerText = `Q. ${index + 1} / ${examQuestions.length}`;
+            document.getElementById('q-text').innerText = currentLang === 'hi' ? q.question_hi : q.question_en;
+
+            let container = document.getElementById('options-container');
+            container.innerHTML = '';
+            let opts = currentLang === 'hi' ? q.options_hi : q.options_en;
+
+            opts.forEach((opt, idx) => {
+                let btn = document.createElement('button');
+                let sel = userAnswers[index] === idx;
+                btn.className = `w-full text-left p-2.5 rounded-lg border text-xs font-medium transition ${sel ? 'bg-indigo-50 border-indigo-600 text-indigo-950 font-bold' : 'bg-slate-50 border-slate-200 text-slate-700'}`;
+                btn.onclick = () => { userAnswers[index] = idx; loadQuestion(index); };
+                btn.innerText = `${String.fromCharCode(65 + idx)}. ${opt}`;
+                container.appendChild(btn);
+            });
+
+            document.getElementById('prev-btn').disabled = index === 0;
+            updatePalette();
+        }
+
+        function clearResponse() { delete userAnswers[currentQuestionIndex]; loadQuestion(currentQuestionIndex); }
+        function saveAndNext() { if (currentQuestionIndex < examQuestions.length - 1) loadQuestion(currentQuestionIndex + 1); }
+        function markForReviewAndNext() { reviewStatus[currentQuestionIndex] = true; saveAndNext(); }
+        function navigateQuestion(step) { loadQuestion(currentQuestionIndex + step); }
+
+        function renderPalette() {
+            let grid = document.getElementById('palette-grid');
+            grid.innerHTML = '';
+            examQuestions.forEach((_, idx) => {
+                let btn = document.createElement('button');
+                btn.id = `pal-btn-${idx}`;
+                btn.onclick = () => loadQuestion(idx);
+                btn.innerText = idx + 1;
+                grid.appendChild(btn);
+            });
+            updatePalette();
+        }
+
+        function updatePalette() {
+            examQuestions.forEach((_, idx) => {
+                let btn = document.getElementById(`pal-btn-${idx}`);
+                if (!btn) return;
+                let ans = userAnswers.hasOwnProperty(idx), mrk = reviewStatus[idx], vis = visitedStatus[idx];
+                if (mrk && ans) btn.className = 'h-5 btn-marked-answered text-[9px] font-bold rounded';
+                else if (mrk) btn.className = 'h-5 btn-marked text-[9px] font-bold';
+                else if (ans) btn.className = 'h-5 btn-answered text-[9px] font-bold rounded';
+                else if (vis) btn.className = 'h-5 btn-not-answered text-[9px] font-bold rounded';
+                else btn.className = 'h-5 btn-not-visited text-[9px] font-bold rounded';
+            });
+        }
+
+        function confirmSubmitExam() { if (confirm("Submit test and view scorecard?")) submitExam(); }
+
+        function submitExam() {
+            clearInterval(timerInterval);
+            document.getElementById('exam-screen').classList.add('hidden');
+            document.getElementById('timer-box').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            let correct = 0, incorrect = 0, topicStats = {};
+            let localWeakTopics = [];
+
+            examQuestions.forEach((q, idx) => {
+                if (!topicStats[q.topic]) topicStats[q.topic] = { total: 0, correct: 0 };
+                topicStats[q.topic].total++;
+
+                if (userAnswers.hasOwnProperty(idx)) {
+                    if (userAnswers[idx] === q.answer) { correct++; topicStats[q.topic].correct++; }
+                    else { incorrect++; }
+                }
+            });
+
+            // UPDATED SCORE RULE: +3 for correct, -1 for incorrect
+            let maxPossibleScore = examQuestions.length * 3;
+            let score = (correct * 3) - (incorrect * 1);
+            let acc = (correct + incorrect) > 0 ? ((correct / (correct + incorrect)) * 100).toFixed(0) : 0;
+
+            document.getElementById('result-set-title').innerText = `Set: ${currentSetId}`;
+            document.getElementById('res-score').innerText = `${score} / ${maxPossibleScore}`;
+            document.getElementById('res-correct').innerText = correct;
+            document.getElementById('res-incorrect').innerText = incorrect;
+            document.getElementById('res-accuracy').innerText = `${acc}%`;
+
+            let heatmap = document.getElementById('heatmap-container');
+            heatmap.innerHTML = '';
+
+            Object.keys(topicStats).forEach(top => {
+                let stat = topicStats[top];
+                let perc = stat.total > 0 ? (stat.correct / stat.total) * 100 : 0;
+                
+                if (perc < 75) localWeakTopics.push(top);
+
+                let color = perc >= 75 ? "heat-strong" : (perc >= 50 ? "heat-moderate" : "heat-weak");
+                let div = document.createElement('div');
+                div.className = "p-2.5 rounded border border-slate-200 bg-slate-50 flex justify-between items-center text-xs";
+                div.innerHTML = `<div><div class="font-bold text-[11px]">${top}</div><div class="text-[9px] text-slate-500">${stat.correct}/${stat.total} Correct</div></div><span class="px-2 py-0.5 rounded font-bold text-[9px] ${color}">${perc.toFixed(0)}%</span>`;
+                heatmap.appendChild(div);
+            });
+
+            let users = JSON.parse(localStorage.getItem('st_users') || '{}');
+            if (users[currentUser.username]) {
+                let existingWeak = new Set(users[currentUser.username].weakTopics || []);
+                localWeakTopics.forEach(t => existingWeak.add(t));
+                users[currentUser.username].weakTopics = Array.from(existingWeak);
+                localStorage.setItem('st_users', JSON.stringify(users));
+            }
+
+            updateWeaknessSummary();
+        }
+
+        checkAuth();
+    </script>
+</body>
+</html>
