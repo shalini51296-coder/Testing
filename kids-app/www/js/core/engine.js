@@ -55,8 +55,17 @@ export function isUnlocked(p, s) {
   return s.pre.every((id) => isDone(p.skills[id]));
 }
 
+// Zone of proximal development: offer skills at most one level above the child's
+// current level (age-based guess, raised as she masters lower levels).
+export function levelCap(p) {
+  const open = SKILLS.filter((s) => isUnlocked(p, s) && !isDone(p.skills[s.id]));
+  const lowest = open.length ? Math.min(...open.map((s) => s.level)) : 0;
+  return Math.max(levelForAge(p.ageMonths), lowest) + 1;
+}
+
 export function available(p) {
-  return SKILLS.filter((s) => isUnlocked(p, s) && !isDone(p.skills[s.id]));
+  const cap = levelCap(p);
+  return SKILLS.filter((s) => s.level <= cap && isUnlocked(p, s) && !isDone(p.skills[s.id]));
 }
 
 export function dueReviews(p, d = today()) {
