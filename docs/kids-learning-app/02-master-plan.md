@@ -13,6 +13,13 @@ UI and visual design come next (Phase 3) and are built on this plan.
 
 ## 0. Decisions locked
 
+> **Revision (Phase 2b).**
+> - The app now starts from about **2 years** with a level-based adaptive syllabus (L0–L8). See `03-adaptive-syllabus.md`, which supersedes the age-based framing of Section 4.
+> - Primary device is a **mobile phone, used in landscape**.
+> - The companion is a **baby elephant ("Tara", working name)**.
+> - The voice is a **North Indian female persona**.
+> - The age bands in Sections 1 and 4 below remain the *typical* path for a child who starts at about 4.
+
 | Decision | Choice | Reason |
 |---|---|---|
 | Learner | Daughter, 4 years 2 months now; plan runs to about 10 years | — |
