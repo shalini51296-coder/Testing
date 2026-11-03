@@ -366,3 +366,31 @@ button:disabled { cursor: default; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* ---------- curriculum quiz & reader (Explorer mode, 6+) ---------- */
+.qbox { display: flex; flex-direction: column; align-items: center; gap: 4px; max-width: min(94vw, 820px); }
+.qtext { font: 600 clamp(17px, 5.2vh, 26px)/1.25 var(--font-en); text-align: center; color: var(--ink); }
+.qtext.hi, .qchoice.hi, .reader.hi { font-family: var(--font-deva); }
+.qtitle { font: 700 15px var(--font-ui); color: var(--muted); display: flex; align-items: center; gap: 8px; }
+.qvis { display: flex; justify-content: center; }
+.qvis svg { height: clamp(70px, 26vh, 150px); width: auto; max-width: 70vw; }
+.qcoins { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.coin { width: 52px; height: 52px; border-radius: 50%; background: #E6C35C; border: 3px solid #B8902A; display: grid; place-items: center; font: 700 15px var(--font-en); color: #4A3500; }
+.coin.note { width: 74px; border-radius: 8px; background: #CFE8C5; border-color: #5F8F4E; color: #234; }
+.qgroups { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.qg { background: #fff; border: 2px dashed #C9CFEA; border-radius: 14px; padding: 4px 8px; color: var(--primary); font-size: 22px; letter-spacing: 2px; }
+.choices.qlist { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; width: min(100%, 820px); }
+.choices.qlist .choice { width: auto; height: auto; min-height: 50px; padding: 8px 14px; border-radius: 18px; }
+.choices.qshort .choice { height: calc(var(--choice) * .72); }
+.qchoice { font: 600 clamp(15px, 4.4vh, 21px)/1.2 var(--font-ui); color: var(--ink); text-align: center; }
+.qchoice.big { font: 700 clamp(26px, 9vh, 44px) var(--font-en); color: var(--primary-d); }
+.explain { margin-top: 4px; background: #EAF7EF; color: #1F5E3A; border-radius: 14px; padding: 6px 12px; font: 500 clamp(14px, 4vh, 18px)/1.3 var(--font-ui); max-width: min(92vw, 760px); text-align: center; }
+.reader { position: relative; z-index: 3; width: min(100%, 820px); max-height: calc(100vh - 90px); overflow: auto; background: #fff; border-radius: 22px; box-shadow: var(--shadow); padding: 10px 20px 14px; user-select: text; }
+.reader h3 { margin: 0 0 4px; font: 800 20px var(--font-ui); color: var(--primary-d); }
+.reader p { margin: 0 0 10px; font: 500 clamp(16px, 4.8vh, 21px)/1.55 var(--font-en); }
+.reader.hi p { font-family: var(--font-deva); }
+.reader-ov { position: absolute; inset: 0; background: rgba(255, 248, 236, .97); display: grid; place-items: center; z-index: 20; }
+.read-done { min-height: 46px; font-size: 18px; }
+.mode-explorer { --choice: clamp(80px, min(28vh, 19vw), 150px); }
+.mode-explorer .tara-dock .tara { --tara-size: 84px; }
+.mode-explorer.activity { --dock: 70px; }

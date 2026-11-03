@@ -1,5 +1,5 @@
 // Offline cache for the installable web version (the Android app bundles files itself).
-const CACHE = 'tara-v1';
+const CACHE = 'tara-v2';
 const CORE = [
   './', 'index.html', 'css/app.css', 'manifest.webmanifest', 'icon.svg',
   'fonts/andika-400.woff2', 'fonts/andika-700.woff2', 'fonts/baloo2-latin.woff2', 'fonts/baloo2-deva.woff2',
@@ -7,7 +7,9 @@ const CORE = [
   'js/core/util.js', 'js/core/storage.js', 'js/core/audio.js', 'js/core/recordings.js', 'js/core/engine.js', 'js/core/ui.js', 'js/core/tara.js',
   'js/content/words.js', 'js/content/phonics.js', 'js/content/hindi.js', 'js/content/skills.js',
   'js/games/index.js', 'js/games/runner.js', 'js/games/parts.js', 'js/games/language.js', 'js/games/sounds.js',
-  'js/games/letters.js', 'js/games/math.js', 'js/games/thinking.js', 'js/games/hindi-games.js',
+  'js/games/letters.js', 'js/games/math.js', 'js/games/thinking.js', 'js/games/hindi-games.js', 'js/games/quiz.js',
+  'js/content/curriculum/math-gen.js', 'js/content/curriculum/english-bank.js', 'js/content/curriculum/hindi-bank.js',
+  'js/content/curriculum/evs-bank.js', 'js/content/curriculum/reading.js', 'js/content/curriculum/quizgen.js',
 ];
 self.addEventListener('install', (e) => e.waitUntil(caches.open(CACHE).then((c) => c.addAll(CORE)).then(() => self.skipWaiting())));
 self.addEventListener('activate', (e) => e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())));

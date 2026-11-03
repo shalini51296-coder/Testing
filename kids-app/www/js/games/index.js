@@ -5,6 +5,7 @@ import * as P from './letters.js';
 import * as M from './math.js';
 import * as T from './thinking.js';
 import * as H from './hindi-games.js';
+import * as Q from './quiz.js';
 
 export const GAMES = {
   showme: L.showme,
@@ -42,4 +43,6 @@ export const GAMES = {
   gonogo: T.gonogo,
   hiletter: H.hiletter,
   hiword: H.hiword,
+  quiz: Q.quiz,
+  reader: Q.reader,
 };

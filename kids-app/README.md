@@ -2,61 +2,35 @@
 
 Tara is an offline learning app for young children, built on the research and plans in `docs/kids-learning-app/`. A baby-elephant companion, Tara, speaks in English and Hindi. Learning is adaptive, mastery-based and spaced over time.
 
-## What is in it now (v0.1)
+## What is in it now (v0.2): ages 2 to 10
 
-**Content inventory:**
+The full homeschool plan is in `docs/kids-learning-app/05-homeschool-curriculum.md`.
 
-| Item | Count |
+**205 skills across levels L0–L8** (about 2 years to Class 5), each mastered adaptively.
+
+| Area | Content |
 |---|---|
-| Skills in the adaptive syllabus | **92** (levels L0–L4, about 2 to 6.5 years) |
-| Game templates | **35** |
-| Picture words, each with a Hindi translation | **175** (79 fully decodable for phonics) |
-| Phonics graphemes | **47** (full *Letters and Sounds* order) |
-| Hindi akshara | **48** (स्वर, व्यंजन, conjuncts) |
-| Hindi first words without matras | **12** |
+| **Maths** | 25 foundation skills plus **54 generator topics** (unlimited questions; wrong answers model real misconceptions). Covers place value to crores, the four operations, fractions, decimals, percent, ₹ money, time, measurement, geometry, bar graphs, Roman numerals and early algebra. |
+| **English** | Phonics and phonological awareness; **108 graded vocabulary words** (meaning, example, Hindi gloss); **352 grammar and morphology rows** feeding 21 question types. |
+| **Reading** | **19 original passages** (16 English, 3 Hindi) with 69 questions: literal, inference, vocabulary, main idea. |
+| **Hindi** | 48 akshara and first words; **208 rows** of matra words, conjuncts, विलोम, पर्यायवाची, लिंग, वचन, मुहावरे, शब्द-भेद; number names 1–100, days, ऋतुएँ. |
+| **EVS** | **162 explained questions** across 15 units (science, India, world, history, civics). |
+| **Thinking** | Patterns, rotation, rule switching, memory, go/no-go, Number Race. |
 
-**Skills by area:**
+**Three interface modes:**
+- **Tiny** (2–3.5): tap only, 2 choices.
+- **Little** (3.5–6): games with tiles, frames and boards.
+- **Explorer** (6+): read-aloud quizzes with an explanation after every answer, and a reading-comprehension reader.
 
-| Area | Skills |
-|---|---|
-| English oral vocabulary (EN-OL) | 13 |
-| Listening for sounds (EN-PA) | 6 |
-| Letters and reading (EN-PH) | 22 |
-| Maths (MA) | 25 |
-| Logic and spatial (LG/SP) | 5 |
-| Attention and self-control (EF) | 4 |
-| Hindi (HI) | 14 |
-| Feelings (SE) | 3 |
-
-**Learning engine:**
-- Bayesian Knowledge Tracing per skill.
+**Engine:**
+- Bayesian Knowledge Tracing.
 - Mastery means P ≥ 0.95 and correct answers on 2 separate days.
 - Spaced review at 1, 3, 7, 16, 35 and 90 days.
-- Age-based placement guess, with lower-level skills checked quickly by review.
-- Difficulty steps keep success around 80–85%.
+- Age-based placement.
+- Skills offered only up to one level above the child's current level.
+- Difficulty tuned to about 80–85% success.
 
-**Games:**
-
-| Area | Games |
-|---|---|
-| Language | Show-me words (English and Hindi), colours, big/small, categories, prepositions, feelings |
-| Sounds | Clap syllables, rhyme, first and last sound, blending |
-| Letters | Letters of my name, capital/small matching, letter sounds (name + sound + picture), read-a-word with sound buttons, build-a-word with tiles, tricky words |
-| Maths | One/many, compare more/fewer, quick-look dots (subitizing), tap-to-count, give-N "feed Tara", numerals to 20, Number Race (linear board game), one more/less, number bonds with five- and ten-frames, story sums, patterns, shapes |
-| Thinking | Find the same, odd one out, mental rotation, colour-then-shape rule switch (DCCS), memory pairs, go/no-go |
-| Hindi | Akshara with keyword pictures; first words with akshara sound buttons |
-
-**Around the games:**
-- Home world with a garden that grows as she masters skills.
-- Quest doors to choose an area, a sticker book, and off-screen missions.
-- Daily time cap and bedtime lock.
-- **Parent Corner** behind a long-press and a sum:
-  - weekly minutes and level by area
-  - struggling / learning / mastered lists
-  - settings and voice choice
-  - backup and restore
-  - multiple children
-  - **Recording Studio** for recording pure phonemes and akshara in a real voice
+**Parent Corner:** progress, settings, voices, backup, multiple children, and the Recording Studio.
 
 ## Run it
 

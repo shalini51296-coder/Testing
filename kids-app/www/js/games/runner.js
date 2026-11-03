@@ -126,6 +126,7 @@ export async function runChoiceItem(item, ctx, { demo = false, setReplay, setHi 
           btns.forEach((x) => (x.disabled = true));
           tara.mood('happy', 1400);
           celebrate(b);
+          if (item.showExplain) prompt.append(h('div.explain', {}, item.showExplain));
           await say(item.right ? [praise(), ...[].concat(item.right)] : [praise()]);
           resolve({ ok: true, hinted: wrongs > 0, choices: item.choices.length });
           return;

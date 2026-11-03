@@ -19,11 +19,15 @@ export function levelForAge(ageMonths) {
   if (ageMonths < 42) return 1;
   if (ageMonths < 54) return 2;
   if (ageMonths < 66) return 3;
-  return 4;
+  if (ageMonths < 78) return 4;
+  if (ageMonths < 90) return 5;
+  if (ageMonths < 102) return 6;
+  if (ageMonths < 114) return 7;
+  return 8;
 }
 
 export function uiMode(p) {
-  return p.ageMonths < 42 ? 'tiny' : 'little';
+  return p.ageMonths < 42 ? 'tiny' : p.ageMonths < 72 ? 'little' : 'explorer';
 }
 
 function blank() {
@@ -36,7 +40,13 @@ export function ensure(p) {
   for (const s of SKILLS) {
     if (!p.skills[s.id]) {
       const m = blank();
-      if (!p.placed && s.level <= start - 2) {
+      if (!p.placed && s.level <= start - 3) {
+        // far below her age: treat as known, light long-gap review only
+        m.st = 'mastered';
+        m.p = 0.95;
+        m.iv = 35;
+        m.due = addDays(today(), 35);
+      } else if (!p.placed && s.level <= start - 2) {
         m.st = 'assumed'; // probably known: confirm by quick review
         m.p = 0.7;
         m.due = today();
