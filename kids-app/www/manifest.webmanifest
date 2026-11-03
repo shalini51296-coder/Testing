@@ -1,0 +1,10 @@
+{
+  "name": "Tara Learning",
+  "short_name": "Tara",
+  "start_url": "./",
+  "display": "fullscreen",
+  "orientation": "landscape",
+  "background_color": "#FFF8EC",
+  "theme_color": "#FFB547",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }]
+}

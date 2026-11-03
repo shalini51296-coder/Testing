@@ -1,0 +1,17 @@
+{
+  "name": "tara-learning",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tara: evidence-based learning world for children aged 2 to 10 (English, Hindi, maths, thinking). Offline Android app + PWA.",
+  "scripts": {
+    "serve": "python3 -m http.server 8765 --directory www"
+  },
+  "dependencies": {
+    "@capacitor/android": "^7.0.0",
+    "@capacitor/core": "^7.0.0",
+    "@capacitor-community/text-to-speech": "^6.1.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^7.0.0"
+  }
+}

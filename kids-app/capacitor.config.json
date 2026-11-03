@@ -1,0 +1,7 @@
+{
+  "appId": "com.tara.learning",
+  "appName": "Tara Learning",
+  "webDir": "www",
+  "server": { "androidScheme": "https" },
+  "android": { "backgroundColor": "#FFF8EC" }
+}
